@@ -3,8 +3,15 @@ const { default: mongoose } = require("mongoose");
 const schema = new mongoose.Schema({
     name: {
         type: String,
-        unique: true,
         required: [true, "name is required"]
+    },
+
+    phone: {
+        type: String
+    },
+
+    address: {
+        type: String
     },
 
     note: {
@@ -14,6 +21,6 @@ const schema = new mongoose.Schema({
     timestamps: true // Automatically adds `createdAt` and `updatedAt` fields
 })
 
-const Category = mongoose.model("Category", schema)
+const Customer = mongoose.model("Customer", schema)
 
-module.exports = Category
+module.exports = Customer

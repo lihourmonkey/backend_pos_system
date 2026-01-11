@@ -1,9 +1,20 @@
-const Category = require("../models/category.model")
+const Customer = require("../models/customer.model");
+
 
 exports.create = async (req, res, next) => {
 
     try {
-        const doc = await Category.create(req.body);
+
+        const exist = await Customer.findOne({ name: req.body.name })
+
+        if (exist) {
+            res.status(409).json({
+                success: false,
+                error: "name is already existed!"
+            })
+        }
+
+        const doc = await Customer.create(req.body);
 
         res.status(201).json({
             success: true,
@@ -30,14 +41,14 @@ exports.findAll = async (req, res, next) => {
             ]
         }
 
-        const doc = await Category.find(querySearch)
+        const doc = await Customer.find(querySearch)
             .limit(limit)
             .skip(skip)
             .sort({ _id: -1 })
             .exec()
 
         // total record
-        const totalItem = await Category.find(querySearch).countDocuments();
+        const totalItem = await Customer.find(querySearch).countDocuments();
         // total page
         const totalPage = Math.ceil(totalItem / limit);
 
@@ -58,7 +69,7 @@ exports.findOne = async (req, res, next) => {
 
         const id = req.params.id
 
-        const doc = await Category.findById(id);
+        const doc = await Customer.findById(id);
 
         if (!doc) {
             res.status(404).json({
@@ -82,7 +93,7 @@ exports.update = async (req, res, next) => {
     try {
 
         const id = req.params.id
-        const doc = await Category.findByIdAndUpdate(id, req.body, { new: true })
+        const doc = await Customer.findByIdAndUpdate(id, req.body, { new: true })
 
         if (!doc) {
             res.status(404).json({
@@ -106,7 +117,7 @@ exports.remove = async (req, res, next) => {
     try {
 
         const id = req.params.id
-        const doc = await Category.findByIdAndDelete(id)
+        const doc = await Customer.findByIdAndDelete(id)
 
         if (!doc) {
             res.status(404).json({
