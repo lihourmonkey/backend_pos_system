@@ -7,7 +7,7 @@ const schema = new mongoose.Schema({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        required: [true, "name is required"],
+        required: true,
         ref: "Category"
     },
     code: {
