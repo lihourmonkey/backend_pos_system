@@ -1,4 +1,5 @@
 const bcryptjs = require("bcryptjs")
+const jwt = require("jsonwebtoken")
 const User = require("../models/user.model")
 
 exports.signup = async (req, res, next) => {
@@ -60,14 +61,27 @@ exports.signin = async (req, res, next) => {
         }
         
         //4). create token
-        
+        const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_LIFETIME
+        })
 
         //5). set cookie
-
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            maxAge: 1 * 24 * 60 * 60 * 1000,
+            domain: "localhost",
+            sameSite: "Strict"
+        })
         
         res.status(200).json({
             success: true,
-            result: "Sign in"
+            result: {
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                token: token
+            }
         })
     } catch (error) {
         next(error)
